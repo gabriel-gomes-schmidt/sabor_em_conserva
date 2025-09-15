@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sabor em Conserva - Pedido Online</title>
+    <meta name="description" content="Faça seu pedido de conservas artesanais: picles, pimentas, berinjela, pepino e muito mais. Recebemos seu pedido com local e quantidades." />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="logo-removebg-preview.png" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="container header__inner">
+        <div class="brand">
+          <img src="logo-removebg-preview.png" alt="Logo Sabor em Conserva" class="brand__logo" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/tabler/tabler-icons/icons/jar.svg';" />
+          <h1 class="brand__title">Sabor em Conserva</h1>
+        </div>
+        <p class="brand__subtitle">Conservas artesanais fresquinhas. Faça seu pedido diretamente pelo site.</p>
+        <div class="header__actions" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <button id="btnOpenLoginTop" class="btn btn--ghost" type="button">Login</button>
+          <button id="btnOpenRegisterTop" class="btn btn--primary" type="button">Cadastrar</button>
+          <span id="authHeaderWelcome" class="muted" style="display:none;">Bem-vindo, <strong id="authHeaderName"></strong></span>
+          <button id="btnLogoutTop" class="btn btn--ghost" type="button" style="display:none;">Sair</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="catalog" id="catalog">
+        <h2 class="section-title">Cardápio</h2>
+        <div id="productsGrid" class="grid"></div>
+      </section>
+
+      <section class="order" id="order">
+        <h2 class="section-title">Localização</h2>
+        <form id="addressForm" class="form" onsubmit="return false;">
+          <div class="form__row form__row--inline">
+            <button id="btnLocate" type="button" class="btn btn--ghost">Usar minha localização</button>
+            <span id="locStatus" class="muted"></span>
+          </div>
+          <div class="form__row form__row--inline">
+            <label class="muted"><input id="pickup" type="checkbox" /> Retirar na loja</label>
+          </div>
+          <div id="storeAddressDisplay" class="form__row muted" style="display:none; font-weight:600;"></div>
+          <div id="addressFields">
+          <div class="form__row">
+            <label for="addrCep">CEP</label>
+            <input id="addrCep" type="text" placeholder="00000-000" />
+          </div>
+          <div class="form__row">
+            <label for="addrBairro">Bairro</label>
+            <input id="addrBairro" type="text" placeholder="Bairro" />
+          </div>
+          <div class="form__row">
+            <label for="addrRua">Rua</label>
+            <input id="addrRua" type="text" placeholder="Rua/Avenida" />
+          </div>
+          <div class="form__row">
+            <label for="addrNumero">Número</label>
+            <input id="addrNumero" type="text" placeholder="Número" />
+          </div>
+          <div class="form__row">
+            <label for="addrCidade">Cidade</label>
+            <input id="addrCidade" type="text" placeholder="Cidade" />
+          </div>
+          <div class="form__row">
+            <label for="addrEstado">Estado</label>
+            <input id="addrEstado" type="text" placeholder="UF" />
+          </div>
+          <div class="form__row">
+            <label for="addrCompl">Complemento</label>
+            <input id="addrCompl" type="text" placeholder="Apartamento, ponto de referência, etc." />
+          </div>
+          </div>
+        </form>
+      </section>
+
+      <section class="summary" id="summary">
+        <h2 class="section-title">Resumo do pedido</h2>
+        <div id="orderList" class="order-list empty">Nenhum item selecionado.</div>
+        <div class="summary__footer">
+          <div class="total">
+            <span>Total</span>
+            <strong id="orderTotal">R$ 0,00</strong>
+          </div>
+          <div class="actions">
+            <button id="btnSubmitOrder" class="btn btn--primary">Finalizar pedido</button>
+            <button id="btnCopy" class="btn btn--ghost" title="Copiar resumo do pedido">Copiar resumo</button>
+          </div>
+        </div>
+
+      </section>
+    </main>
+
+    <!-- Modal de Autenticação -->
+    <div id="modalBackdrop" class="modal-backdrop" style="display:none;"></div>
+    <div id="modalAuth" class="modal" style="display:none;">
+      <div class="modal__panel">
+        <div class="modal__header">
+          <h3 id="modalTitle" class="modal__title">Entrar</h3>
+          <button id="modalClose" class="btn btn--ghost" type="button" title="Fechar">×</button>
+        </div>
+        <div class="modal__body">
+          <div class="form__row">
+            <label for="regName">Nome</label>
+            <input id="regName" type="text" placeholder="Seu nome" />
+          </div>
+          <div class="form__row">
+            <label for="regPass">Senha</label>
+            <input id="regPass" type="password" placeholder="Sua senha" />
+          </div>
+          <div class="form__row" id="rowPhoneModal">
+            <label for="regPhone">Telefone</label>
+            <input id="regPhone" type="tel" placeholder="(DDD) 90000-0000" />
+          </div>
+        </div>
+        <div class="modal__footer">
+          <div class="actions">
+            <button id="btnActionLogin" class="btn btn--ghost" type="button">Entrar</button>
+            <button id="btnActionRegister" class="btn btn--primary" type="button">Cadastrar</button>
+            <button id="btnAdminLoginModal" class="btn btn--ghost" type="button" title="Login de administrador">Entrar como Admin</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="container footer__inner">
+        <div style="display:flex; gap:14px; align-items:center; flex-wrap:wrap;">
+          <p style="margin:0;">Sabor em Conserva — feito com carinho. ❤️</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

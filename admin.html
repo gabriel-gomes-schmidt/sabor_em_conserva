@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Conservas da Casa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .admin { margin-top: 22px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+      .tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+      .tabs button { padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); background: #10131e; color: var(--text); cursor: pointer; }
+      .tabs button.active { background: var(--primary); color: var(--primary-ink); border-color: var(--primary); }
+      .table { width: 100%; border-collapse: collapse; }
+      .table th, .table td { padding: 8px 6px; border-bottom: 1px solid #20263a; text-align: left; }
+      .row-actions { display: flex; gap: 8px; }
+      .muted-center { color: var(--muted); text-align: center; padding: 10px 0; }
+      .topbar { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; }
+      .status-badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: .8rem; font-weight: 700; border: 1px solid var(--border); }
+      .status-novo { background: #222938; color: #c9d1e5; }
+      .status-recebido { background: #1b3558; color: #bcd7ff; border-color: #2b4a78; }
+      .status-enviado { background: #49320f; color: #ffd9a1; border-color: #6a4a16; }
+      .status-finalizado { background: #0f3a28; color: #b7f3d6; border-color: #185940; }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container header__inner">
+        <div class="brand">
+          <img src="https://cdn.jsdelivr.net/gh/tabler/tabler-icons/icons/shield-lock.svg" alt="Admin" class="brand__logo" />
+          <h1 class="brand__title">Admin • Conservas da Casa</h1>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="admin" id="loginSection">
+        <h2 class="section-title">Login</h2>
+        <form id="loginForm" class="form" onsubmit="return false;">
+          <div class="form__row">
+            <label for="loginUser">Usuário</label>
+            <input id="loginUser" type="text" placeholder="Usuário" required />
+          </div>
+          <div class="form__row">
+            <label for="loginPass">Senha</label>
+            <input id="loginPass" type="password" placeholder="Senha" required />
+          </div>
+          <div class="form__row">
+            <button id="btnLogin" class="btn btn--primary" type="submit">Entrar</button>
+          </div>
+          <p class="muted small">Dica: usuário <strong>gabrielg</strong> • senha <strong>123456789</strong></p>
+        </form>
+      </section>
+
+      <section class="admin" id="panelSection" style="display:none;">
+        <div class="topbar">
+          <div class="tabs">
+            <button data-tab="products" class="active">Produtos</button>
+            <button data-tab="orders">Pedidos</button>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <a href="index.html" target="_blank" class="btn btn--ghost">Abrir site</a>
+            <button id="btnLogout" class="btn btn--ghost">Sair</button>
+          </div>
+        </div>
+
+        <div id="tab-products">
+          <h2 class="section-title">Gerenciar produtos</h2>
+          <form id="productForm" class="form" onsubmit="return false;">
+            <input type="hidden" id="prodId" />
+            <div class="form__row">
+              <label for="prodName">Nome</label>
+              <input id="prodName" type="text" required />
+            </div>
+            <div class="form__row">
+              <label for="prodDesc">Descrição</label>
+              <input id="prodDesc" type="text" />
+            </div>
+            <div class="form__row">
+              <label for="prodUnit">Unidade/Peso</label>
+              <input id="prodUnit" type="text" placeholder="ex: 300g" />
+            </div>
+            <div class="form__row">
+              <label for="prodPrice">Preço (R$)</label>
+              <input id="prodPrice" type="number" step="0.01" min="0" required />
+            </div>
+            <div class="form__row">
+              <label for="prodImgUrl">Imagem (URL) — opcional</label>
+              <input id="prodImgUrl" type="url" placeholder="https://exemplo.com/imagem.jpg" />
+            </div>
+            <div class="form__row">
+              <label for="prodImgFile">Ou enviar arquivo (JPG/PNG) — opcional</label>
+              <input id="prodImgFile" type="file" accept="image/*" />
+              <div style="margin-top:6px; display:flex; align-items:center; gap:10px;">
+                <img id="prodImgPreview" src="" alt="Prévia" style="width:60px; height:60px; object-fit:cover; border-radius:8px; display:none; border:1px solid var(--border);" />
+                <span class="muted small">A imagem do arquivo, se escolhida, tem prioridade sobre a URL.</span>
+              </div>
+            </div>
+            <div class="form__row form__row--inline">
+              <button id="btnSaveProd" class="btn btn--primary" type="submit">Salvar</button>
+              <button id="btnResetProd" class="btn btn--ghost" type="button">Limpar</button>
+            </div>
+          </form>
+
+          <h3 class="section-title">Lista de produtos</h3>
+          <table class="table" id="productsTable"></table>
+        </div>
+
+        <div id="tab-orders" style="display:none;">
+          <h2 class="section-title">Pedidos recebidos</h2>
+          <div class="form__row form__row--inline" style="margin-bottom:8px;">
+            <label class="muted" for="filterStatus">Filtrar por status</label>
+            <select id="filterStatus" style="background:#10131e; color:var(--text); border:1px solid var(--border); border-radius:10px; padding:8px 10px;">
+              <option value="todos">Todos</option>
+              <option value="novo">Novo</option>
+              <option value="recebido">Recebido</option>
+              <option value="enviado">Enviado</option>
+              <option value="finalizado">Finalizado</option>
+            </select>
+          </div>
+          <div class="form__row form__row--inline" style="margin-bottom:8px;">
+            <label class="muted"><input id="selectAllOrders" type="checkbox" /> Selecionar todos</label>
+            <button id="btnBulkFinalize" class="btn btn--ghost" type="button">Finalizar selecionados</button>
+            <button id="btnDeleteFinalized" class="btn btn--ghost" type="button" title="Remover todos os pedidos com status Finalizado">Apagar finalizados</button>
+          </div>
+          <div id="ordersList"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer__inner">
+        <a href="index.html" class="muted">Voltar ao site</a>
+      </div>
+    </footer>
+
+    <script src="admin.js"></script>
+  </body>
+</html>
